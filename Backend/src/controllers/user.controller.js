@@ -28,7 +28,7 @@ const register = asyncHandler(async (req, res) => {
     avatar
   });
 
-  const user = await User.findOne({ email }).select("-password");
+  const user = await User.findOne({ email }).select("-password -refresh_token");
 
   res.status(200).json({data: user, message: "User registered successfully" });
 });
