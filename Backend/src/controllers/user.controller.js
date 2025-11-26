@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiErrorHandler } from "../utils/apiErrorHandler.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -27,6 +28,48 @@ const generateTokens = async (userId) => {
     throw new ApiErrorHandler(500, "Token generation failed");
   }
 };
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const refresh_token = req.cookies.refresh_token || req.body.refresh_token;
+
+  if (!refresh_token) {
+    throw new ApiErrorHandler(401, "Refresh token is missing");
+  }
+
+  try {
+    const decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
+
+    if(!decoded) {
+      throw new ApiErrorHandler(403, "Invalid refresh token");
+    }
+
+    const user = await User.findById(decoded._id);
+
+    if(!user) {
+      throw new ApiErrorHandler(404, "User not found");
+    }
+
+    if(user.refresh_token !== refresh_token) {
+      throw new ApiErrorHandler(403, "Refresh token does not match");
+    }
+
+    const {accessToken, refreshToken} = await generateTokens(user._id);
+
+    return res.status(200)
+      .cookie("access_token", accessToken, cookieOptions)
+      .cookie("refresh_token", refreshToken, cookieOptions)
+      .json({
+        data: {
+          accessToken,
+          refreshToken
+        },
+        message: "Access token refreshed successfully"
+      });
+  } catch (error) {
+    console.log("Refresh Error : ",error.message);    
+    throw new ApiErrorHandler(403, "Invalid refresh token");
+  }
+})
 
 const register = asyncHandler(async (req, res) => {
   const { user_name, full_name, email, password } = req.body;
@@ -112,4 +155,4 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json({ message: "User logged out successfully", data: null });
 });
 
-export { register, loginUser, logoutUser };
+export { register, loginUser, logoutUser, refreshAccessToken};
