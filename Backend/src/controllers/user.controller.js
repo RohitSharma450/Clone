@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiErrorHandler } from "../utils/apiErrorHandler.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendEmail } from "../utils/emailService.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -39,41 +40,42 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
     const decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
 
-    if(!decoded) {
+    if (!decoded) {
       throw new ApiErrorHandler(403, "Invalid refresh token");
     }
 
     const user = await User.findById(decoded._id);
 
-    if(!user) {
+    if (!user) {
       throw new ApiErrorHandler(404, "User not found");
     }
 
-    if(user.refresh_token !== refresh_token) {
+    if (user.refresh_token !== refresh_token) {
       throw new ApiErrorHandler(403, "Refresh token does not match");
     }
 
-    const {accessToken, refreshToken} = await generateTokens(user._id);
+    const { accessToken, refreshToken } = await generateTokens(user._id);
 
-    return res.status(200)
+    return res
+      .status(200)
       .cookie("access_token", accessToken, cookieOptions)
       .cookie("refresh_token", refreshToken, cookieOptions)
       .json({
         data: {
           accessToken,
-          refreshToken
+          refreshToken,
         },
-        message: "Access token refreshed successfully"
+        message: "Access token refreshed successfully",
       });
   } catch (error) {
-    console.log("Refresh Error : ",error.message);    
+    console.log("Refresh Error : ", error.message);
     throw new ApiErrorHandler(403, "Invalid refresh token");
   }
-})
+});
 
 const register = asyncHandler(async (req, res) => {
   const { user_name, full_name, email, password } = req.body;
-  const avatar = req.file.path;
+  const avatar = req.file?.path;
 
   if ([user_name, full_name, email, password].some((field) => !field)) {
     throw new ApiErrorHandler(404, "All fields are required");
@@ -103,7 +105,21 @@ const register = asyncHandler(async (req, res) => {
   });
 
   const user = await User.findOne({ email }).select("-password -refresh_token");
-  res.status(200).json({ data: user, message: "User registered successfully" });
+
+  const subject = "Welcome to Our Platform!";
+  const text = `
+    Hi ${full_name},\n\n
+    Welcome to our platform! We're excited to have you join us. Feel free to explore all the features.\n\n
+    Best regards,\n
+    The Team
+  `;
+
+  await sendEmail(user.email, subject, text);
+
+  res.status(200).json({
+    data: user,
+    message: "User registered successfully",
+  });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -155,4 +171,4 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json({ message: "User logged out successfully", data: null });
 });
 
-export { register, loginUser, logoutUser, refreshAccessToken};
+export { register, loginUser, logoutUser, refreshAccessToken };
