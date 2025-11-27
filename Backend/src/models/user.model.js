@@ -29,6 +29,12 @@ const userSchema = new Schema(
     cover_image: {
       type: String,
     },
+    otp: {
+      type: String,
+    },
+    otp_expires: {
+      type: Date,
+    },
     watch_history: [
       {
         type: mongoose.Schema.Types.ObjectId,

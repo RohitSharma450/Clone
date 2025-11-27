@@ -3,11 +3,80 @@ import { User } from "../models/user.model.js";
 import { ApiErrorHandler } from "../utils/apiErrorHandler.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendEmail } from "../utils/emailService.js";
+import { forgetPasswordEmail, registerEmail } from "../utils/genrateEmail.js";
 
 const cookieOptions = {
   httpOnly: true,
   sameSite: "strict",
 };
+
+function generateOTP(l) {
+  const numbers = "1234567890";
+  let otp = "";
+
+  for (let i = 0; i < l; i++) {
+    let randomIndex = Math.floor(Math.random() * numbers.length);
+    otp += numbers[randomIndex];
+  }
+
+  return otp;
+}
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiErrorHandler(401, "Email is required.");
+  }
+
+  const user = await User.findOne({ email }).select("-password -refresh_token");
+
+  if (!user) {
+    throw new ApiErrorHandler(404, "User not found.");
+  }
+
+  const otp = generateOTP(4);
+  user.otp = otp;
+  user.otp_expires = Date.now() + 10 * 60 * 1000;
+
+  const { subject, text } = forgetPasswordEmail(user);
+  await sendEmail(user.email, subject, text);
+  await user.save();
+
+  res.status(200).json({
+    message: "OTP send to your email.",
+  });
+});
+
+const verifyPassword = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    throw new ApiErrorHandler(401, "All fields are required.");
+  }
+
+  const user = await User.findOne({ email }).select("-password -refresh_token");
+
+  if (!user) {
+    throw new ApiErrorHandler(404, "User not found.");
+  }
+
+  if (user.otp_expires < Date.now()) {
+    throw new ApiErrorHandler(400, "OTP has expired.");
+  }
+
+  if (user.otp !== otp) {
+    return res.status(401).json({ message: "Wrong OTP" });
+  }
+
+  user.otp = null;
+  user.otp_expires = null;
+  await user.save();
+
+  res.status(200).json({
+    message: "OTP verified successfully.",
+  });
+});
 
 const generateTokens = async (userId) => {
   try {
@@ -90,10 +159,7 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (existedUser) {
-    throw new ApiErrorHandler(
-      409,
-      "User with this email or username already exists"
-    );
+    throw new ApiErrorHandler(409, "User already exists");
   }
 
   await User.create({
@@ -106,15 +172,9 @@ const register = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email }).select("-password -refresh_token");
 
-  const subject = "Welcome to Our Platform!";
-  const text = `
-    Hi ${full_name},\n\n
-    Welcome to our platform! We're excited to have you join us. Feel free to explore all the features.\n\n
-    Best regards,\n
-    The Team
-  `;
+  const { subject, htmlContent } = registerEmail(user);
 
-  await sendEmail(user.email, subject, text);
+  await sendEmail(user.email, subject, htmlContent);
 
   res.status(200).json({
     data: user,
@@ -171,4 +231,11 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json({ message: "User logged out successfully", data: null });
 });
 
-export { register, loginUser, logoutUser, refreshAccessToken };
+export {
+  register,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  forgotPassword,
+  verifyPassword,
+};
