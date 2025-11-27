@@ -2,12 +2,17 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiErrorHandler } from "../utils/apiErrorHandler.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { sendEmail } from "../utils/emailService.js";
-import { forgetPasswordEmail, registerEmail } from "../utils/genrateEmail.js";
+import { sendEmail } from "../middleware/emailService.js";
+import {
+  forgetPasswordEmail,
+  registerEmail,
+  sendPasswordChangeEmail,
+} from "../utils/genrateEmail.js";
 
 const cookieOptions = {
   httpOnly: true,
   sameSite: "strict",
+  secure: true,
 };
 
 function generateOTP(l) {
@@ -76,6 +81,32 @@ const verifyPassword = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "OTP verified successfully.",
   });
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+  let { email, new_Password, confirmPassword } = req.body;
+
+  if ((!email || !new_Password, !confirmPassword)) {
+    throw new ApiErrorHandler(400, "All fields are required.");
+  }
+
+  if (confirmPassword !== new_Password) {
+    throw new ApiErrorHandler(400, "Your passwords doesn't match.");
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiErrorHandler(400, "User not found.");
+  }
+
+  const { subject, text } = sendPasswordChangeEmail(user);
+  await sendEmail(user.email, subject, text);
+
+  user.password = new_Password;
+  await user.save();
+
+  return res.status(200).json({ message: "Password change successfully." });
 });
 
 const generateTokens = async (userId) => {
@@ -238,4 +269,5 @@ export {
   refreshAccessToken,
   forgotPassword,
   verifyPassword,
+  changePassword,
 };

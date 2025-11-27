@@ -55,3 +55,32 @@ export const forgetPasswordEmail = (user) => {
 
   return { subject, text };
 };
+
+export const sendPasswordChangeEmail = (user) => {
+  const subject = "Your Password Has Been Changed";
+  const text = `
+        <html>
+          <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+            <div style="background-color: #f7f7f7; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+              <h2 style="text-align: center; color: hsla(210, 29%, 24%, 1.00);">Your Password Has Been Changed</h2>
+              <p style="font-size: 16px;">Hi <strong>${user.full_name}</strong>,</p>
+              <p style="font-size: 16px;">
+                We wanted to inform you that your password has been successfully changed.
+              </p>
+              <p style="font-size: 16px;">
+                If you did not request this change or if this was done by mistake, please contact our support team immediately at <a href="mailto:support@example.com" style="color: #007bff; text-decoration: none;">support@example.com</a>.
+              </p>
+              <p style="font-size: 16px;">
+                Best regards,<br>
+                <strong>The Team</strong>
+              </p>
+              <div style="text-align: center; margin-top: 20px;">
+                <a href="mailto:support@example.com" style="display: inline-block; background-color: #007bff; color: #fff; padding: 10px 20px; font-size: 16px; text-decoration: none; border-radius: 5px;">Contact Support</a>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+  return { subject, text };
+};

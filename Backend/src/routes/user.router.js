@@ -1,4 +1,5 @@
 import {
+  changePassword,
   forgotPassword,
   loginUser,
   logoutUser,
@@ -23,5 +24,7 @@ router.post("/refresh-token", refreshAccessToken);
 router.post("/forgot-password", forgotPassword);
 
 router.post("/verify-password", verifyPassword);
+
+router.post("/change-password", changePassword);
 
 export default router;
