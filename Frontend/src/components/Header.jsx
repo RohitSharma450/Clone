@@ -6,7 +6,7 @@ import { HiMenu } from "react-icons/hi";
 
 const Header = () => {
   return (
-    <div className="border-b border-white mx-5">
+    <div className="border-b border-white px-5 fixed w-full bg-black z-10">
       <div className="flex justify-between items-center md:px-25 py-4 text-white">
         <div>
           <img src={Logo} alt="Logo" className="h-10 w-10" />
@@ -30,18 +30,18 @@ const Header = () => {
             <BsThreeDotsVertical />
           </p>
 
-          <p>Log in</p>
-          <p
-            className="group relative inline-block text-sm font-medium text-yellow-600"
+          <p className="cursor-pointer">Log in</p>
+          <button
+            className="group relative inline-block text-sm font-medium text-yellow-600 cursor-pointer"
             href="#"
           >
             <span className="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-yellow-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></span>
 
-            <span className="relative block border border-current bg-amber-200 px-6 py-2">
+            <span className="relative block border border-current bg-amber-200 px-6 py-2 ">
               {" "}
               Sign up{" "}
             </span>
-          </p>
+          </button>
         </div>
       </div>
     </div>
