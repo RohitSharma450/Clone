@@ -53,8 +53,10 @@ const Sidebar = () => {
           <div>
             {sidebarOption.map((item, i) => (
               <div
-                className="border py-2 px-2 mb-2 capitalize flex gap-3
-          items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200"
+                className={`border py-2 px-2 mb-2 capitalize flex gap-3
+          items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200 ${
+            !isOpen ? "rounded-lg" : ""
+          }`}
                 key={i}
                 title={isOpen ? null : item.title}
               >
@@ -70,8 +72,10 @@ const Sidebar = () => {
           <div>
             {sidebarOption2.map((item, i) => (
               <div
-                className="border py-2 px-2 mb-2 capitalize flex gap-3
-                items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200"
+                className={`border py-2 px-2 mb-2 capitalize flex gap-3
+              items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200 ${
+                !isOpen ? "rounded-lg" : ""
+              }`}
                 key={i}
                 title={isOpen ? null : item.title}
               >
