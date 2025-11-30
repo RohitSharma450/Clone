@@ -3,13 +3,21 @@ import Logo from "../assets/logo.png";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdSearch } from "react-icons/md";
 import { HiMenu } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <div className="border-b border-white px-5 fixed w-full bg-black z-10">
       <div className="flex justify-between items-center md:px-25 py-4 text-white">
-        <div>
-          <img src={Logo} alt="Logo" className="h-10 w-10" />
+        <div className="cursor-pointer">
+          <Link to={"/"}>
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-10 w-10"
+              title="Y-Tube Home"
+            />
+          </Link>
         </div>
         <div className="relative hidden md:flex border border-white px-2 w-1/4">
           <MdSearch className="text-2xl absolute left-2 top-1/2 -translate-y-1/2" />

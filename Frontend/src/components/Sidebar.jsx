@@ -6,19 +6,20 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { FiSettings } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { setCollapse } from "../redux/slice/sidebarSlice";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const dispatch = useDispatch();
 
   let sidebarOption = [
-    { text: "home", title: "Home", icon: <AiFillHome /> },
-    { text: "liked video", title: "Liked Video", icon: <BiLike /> },
-    { text: "history", title: "History", icon: <AiOutlineHistory /> },
-    { text: "my content", title: "My Content", icon: <MdVideoLibrary /> },
-    { text: "collection", title: "Collection", icon: <BiCollection /> },
-    { text: "subscribers", title: "Subscribers", icon: <MdSubscriptions /> },
-  ];
+  { text: "home", title: "Home", icon: <AiFillHome />, path: "/" },
+  { text: "liked video", title: "Liked Video", icon: <BiLike />, path: "/liked" },
+  { text: "history", title: "History", icon: <AiOutlineHistory />, path: "/history" },
+  { text: "my content", title: "My Content", icon: <MdVideoLibrary />, path: "/my-content" },
+  { text: "collection", title: "Collection", icon: <BiCollection />, path: "/collection" },
+  { text: "subscribers", title: "Subscribers", icon: <MdSubscriptions />, path: "/subscribers" },
+];
 
   const sidebarOption2 = [
     { text: "Support", title: "Support", icon: <AiOutlineQuestionCircle /> },
@@ -52,14 +53,14 @@ const Sidebar = () => {
         <div className="flex flex-col gap-60">
           <div>
             {sidebarOption.map((item, i) => (
+              <Link to={item.path} key={i}>
               <div
                 className={`border py-2 px-2 mb-2 capitalize flex gap-3
-          items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200 ${
-            !isOpen ? "rounded-lg" : ""
-          }`}
-                key={i}
-                title={isOpen ? null : item.title}
-              >
+                  items-center justify-center md:justify-start cursor-pointer hover:bg-zinc-800 transition-all duration-200 ${
+                    !isOpen ? "rounded-lg" : ""
+                  }`}
+                  title={isOpen ? null : item.title}
+                  >
                 <span className="text-xl">{item.icon}</span>
                 {isOpen && (
                   <span className="whitespace-nowrap hidden md:block">
@@ -67,13 +68,14 @@ const Sidebar = () => {
                   </span>
                 )}
               </div>
+              </Link>
             ))}
           </div>
           <div>
             {sidebarOption2.map((item, i) => (
               <div
                 className={`border py-2 px-2 mb-2 capitalize flex gap-3
-              items-center justify-center md:justify-start hover:bg-zinc-800 transition-all duration-200 ${
+              items-center justify-center md:justify-start cursor-pointer hover:bg-zinc-800 transition-all duration-200 ${
                 !isOpen ? "rounded-lg" : ""
               }`}
                 key={i}
