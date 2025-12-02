@@ -39,7 +39,7 @@ const router = createBrowserRouter([
         element: <HistoryPage />,
       },
       {
-        path: "my-content",
+        path: "profile/:id",
         element: <MyContentPage />,
       },
       {

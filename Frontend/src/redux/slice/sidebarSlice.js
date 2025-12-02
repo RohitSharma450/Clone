@@ -6,7 +6,7 @@ const sidebarSlice = createSlice({
     hidden: true,
   },
   reducers: {
-    setCollapse(state, action) {
+    setCollapse: (state, action) => {
       state.hidden = action.payload;
     },
   },

@@ -20,7 +20,7 @@ const SingleVideo = () => {
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* LEFT */}
         <div
-          className={`transition-all w-full 
+          className={`transition-all duration-200 w-full 
       ${hidden ? "lg:w-[70%]" : "lg:w-[975px]"}`}
         >
           {/* VIDEO */}

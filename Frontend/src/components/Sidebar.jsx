@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiFillHome, AiOutlineHistory } from "react-icons/ai";
 import { BiLike, BiCollection, BiArrowBack } from "react-icons/bi";
 import { MdVideoLibrary, MdSubscriptions } from "react-icons/md";
@@ -30,7 +30,7 @@ const Sidebar = () => {
       text: "my content",
       title: "My Content",
       icon: <MdVideoLibrary />,
-      path: "/my-content",
+      path: "/profile/1",
     },
     {
       text: "collection",
@@ -61,6 +61,24 @@ const Sidebar = () => {
     },
   ];
 
+  const handleResize = () => {
+    if (window.innerWidth <= 1035) {
+      setIsOpen(false);
+      dispatch(setCollapse(false));
+    } else {
+      setIsOpen(true);
+      dispatch(setCollapse(true));
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handleCollapse = (e) => {
     e.preventDefault();
     dispatch(setCollapse(!isOpen));
@@ -71,13 +89,13 @@ const Sidebar = () => {
     <div
       className={`hidden sm:block fixed top-18 left-0 h-[calc(100vh-64px)] bg-black border-r
          border-white p-5 transition-all duration-300 z-9 ${
-           isOpen ? "w-48 lg:w-64 " : "w-20"
+           isOpen ? "w-64 " : "w-20"
          }`}
     >
       <div
         onClick={handleCollapse}
-        className="border rounded-full w-10 h-10 flex justify-center items-center bg-black
-       absolute top-3 -right-5 cursor-pointer "
+        className="border rounded-full w-10 h-10  hidden lg:flex justify-center items-center bg-black
+       absolute top-3 -right-5 cursor-pointer"
       >
         <BiArrowBack
           className={`${!isOpen && "rotate-180"} transition-all duration-300`}
