@@ -15,9 +15,8 @@ const Layout = () => {
         <Sidebar />
 
         <div
-          className={`absolute top-20 transition-all ${
-            hidden ? "left-65" : "left-25"
-          }`}
+          className={`mt-20 sm:absolute transition-all 
+            ${hidden ? "left-45 lg:left-65" : "left-25"}`}
         >
           <Outlet />
         </div>
