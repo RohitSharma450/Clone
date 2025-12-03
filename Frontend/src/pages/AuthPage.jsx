@@ -5,15 +5,15 @@ import Button from "../components/Button";
 
 const AuthPage = () => {
   const inputRef = useRef([]);
+  const otp_input_fields = 4;
 
   const [login, setLogin] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const otp_input_fields = 4;
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpInput, setOtpInput] = useState(
     new Array(otp_input_fields).fill(" ")
   );
@@ -67,6 +67,7 @@ const AuthPage = () => {
       inputRef.current[i - 1]?.focus();
     }
   };
+
   return (
     <div className="p-5 translate-y-[10%]">
       <div className="w-5/6 h-[80vh] mx-auto flex flex-col md:flex-row justify-center">
