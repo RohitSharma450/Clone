@@ -16,7 +16,7 @@ const Layout = () => {
 
         <div
           className={`mt-20 sm:absolute transition-all 
-            ${hidden ? "left-45 lg:left-65" : "left-25"}`}
+            ${hidden ? "left-65" : "left-25"}`}
         >
           <Outlet />
         </div>

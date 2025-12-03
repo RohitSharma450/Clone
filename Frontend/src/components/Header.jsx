@@ -39,17 +39,19 @@ const Header = () => {
           </p>
 
           <p className="cursor-pointer">Log in</p>
-          <button
-            className="group relative inline-block text-sm font-medium text-yellow-600 cursor-pointer"
-            href="#"
-          >
-            <span className="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-yellow-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></span>
+          <Link to="/login">
+            <button
+              className="group relative inline-block text-sm font-medium text-yellow-600 cursor-pointer"
+              href="#"
+            >
+              <span className="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-yellow-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></span>
 
-            <span className="relative block border border-current bg-amber-200 px-6 py-2 ">
-              {" "}
-              Sign up{" "}
-            </span>
-          </button>
+              <span className="relative block border border-current bg-amber-200 px-6 py-2 ">
+                {" "}
+                Sign up{" "}
+              </span>
+            </button>
+          </Link>
         </div>
       </div>
     </div>

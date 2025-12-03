@@ -16,7 +16,7 @@ const MyContentPage = () => {
       className="h-[88vh] transition-all w-full sm:w-[calc(100vw-124px)]"
       style={{ width: contentWidth }}
     >
-      <div className="w-full h-60 border bg-gradient-to-r from-stone-300 to-yellow-200"></div>
+      <div className="w-full h-60 border gradient"></div>
       <div className="relative">
         <img
           src={filterContent.channelImg}
@@ -45,7 +45,7 @@ const MyContentPage = () => {
         </div>
       </div>
       <div className="mt-8 border-t">
-        <div className="flex justify-around sm:justify-center items-center gap-2 sm:gap-10 px-2 sm:px-0 mt-4">
+        <div className="flex justify-around sm:justify-center items-center gap-2 md:gap-10 px-2 sm:px-0 mt-4">
           {["Playlist", "Videos", "Tweets", "Following"].map((tab) => (
             <p
               key={tab}

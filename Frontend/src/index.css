@@ -4,3 +4,7 @@ body {
   background-color: #000000;
   color: white;
 }
+
+.gradient {
+  background: linear-gradient(to right, #e4e4e7, #fef08a);
+}

@@ -16,8 +16,13 @@ import SubscriptionsPage from "./pages/SubscriptionsPage.jsx";
 import SupportPage from "./pages/SupportPage.jsx";
 import Header from "./components/Header.jsx";
 import SettingPage from "./pages/SettingPage.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
 
 const router = createBrowserRouter([
+  {
+    path: "login",
+    element: <AuthPage />,
+  },
   {
     path: "/",
     element: <Layout />,
