@@ -7,6 +7,12 @@ const AuthPage = () => {
   const inputRef = useRef([]);
   const otp_input_fields = 4;
 
+  const [formInput, setFormInput] = useState({
+    full_name: "",
+    user_name: "",
+    email: "",
+    password: "",
+  });
   const [login, setLogin] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(1);
@@ -18,22 +24,33 @@ const AuthPage = () => {
     new Array(otp_input_fields).fill(" ")
   );
 
-  const togglePassword = () => setShowPassword((prev) => !prev);
-  const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+  const togglePassword = (e) => {
+    e.preventDefault();
+    setShowPassword((prev) => !prev);
+  };
+  const toggleConfirmPassword = (e) => {
+    e.preventDefault();
+    setShowConfirmPassword((prev) => !prev);
+  };
 
   const handleStep1Submit = (e) => {
     e.preventDefault();
+    console.log(email);
     setStep(2);
   };
 
   const handleStep2Submit = (e) => {
     e.preventDefault();
+    console.log(otpInput);
     setStep(3);
   };
 
   const handleStep3Submit = (e) => {
     e.preventDefault();
+
     if (password === confirmPassword) {
+      console.log(password);
+      console.log(confirmPassword);
       alert("Password reset successful");
       setStep(1);
       setLogin("login");
@@ -50,7 +67,7 @@ const AuthPage = () => {
     inputRef.current[0]?.focus();
   }, []);
 
-  const handleInputChange = (value, i) => {
+  const handleInputChangeforOtp = (value, i) => {
     if (isNaN(value)) return;
 
     let newValue = value.trim();
@@ -68,6 +85,23 @@ const AuthPage = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+    setFormInput({ ...formInput, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formInput);
+
+    setFormInput({
+      full_name: "",
+      user_name: "",
+      email: "",
+      password: "",
+    });
+  };
+
   return (
     <div className="p-5 translate-y-[10%]">
       <div className="w-5/6 h-[80vh] mx-auto flex flex-col md:flex-row justify-center">
@@ -80,7 +114,7 @@ const AuthPage = () => {
         </div>
 
         {login !== "forgot" && (
-          <div className="h-[80vh] flex flex-col justify-center border border-amber-300 w-1/1 md:w-1/2 p-5">
+          <div className="h-[80vh] flex flex-col justify-center border border-l-0 border-amber-300 w-1/1 md:w-1/2 p-5">
             <h1 className="font-bold">Welcome</h1>
             <p className="text-gray-400">
               Sign in to access your documents or create a new account
@@ -111,7 +145,7 @@ const AuthPage = () => {
               </div>
             </div>
 
-            <form className="mt-4">
+            <form onSubmit={handleSubmit} className="mt-4">
               {login !== "login" && (
                 <>
                   <div className="mb-5">
@@ -120,7 +154,9 @@ const AuthPage = () => {
                     </label>
                     <input
                       type="text"
-                      name="username_name"
+                      name="user_name"
+                      value={formInput.user_name}
+                      onChange={handleInputChange}
                       placeholder="user name here..."
                       id="username_name"
                       className="mt-3 rounded-lg px-6 py-2 w-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
@@ -133,6 +169,8 @@ const AuthPage = () => {
                     <input
                       type="text"
                       name="full_name"
+                      value={formInput.full_name}
+                      onChange={handleInputChange}
                       placeholder="full name here..."
                       id="full_name"
                       className="mt-3 rounded-lg px-6 py-2 w-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
@@ -148,6 +186,8 @@ const AuthPage = () => {
                 <input
                   type="email"
                   name="email"
+                  value={formInput.email}
+                  onChange={handleInputChange}
                   placeholder="xyz@gmail.com"
                   id="email"
                   className="mt-3 rounded-lg px-6 py-2 w-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
@@ -160,6 +200,8 @@ const AuthPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  value={formInput.password}
+                  onChange={handleInputChange}
                   placeholder="•••••••••••••••"
                   id="password"
                   className="mt-3 rounded-lg px-6 py-2 w-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
@@ -190,7 +232,7 @@ const AuthPage = () => {
         )}
 
         {login === "forgot" && (
-          <div className="p-5 w-1/2 border flex flex-col justify-center border-amber-300 rounded-lg">
+          <div className="p-5 w-1/2 border flex flex-col justify-center border-amber-300 border-l-0">
             {/* Step Progress */}
             <div className="flex justify-between mb-6">
               <div
@@ -263,17 +305,20 @@ const AuthPage = () => {
                     OTP (One-Time Password):
                   </label>
                   <div className="flex justify-center gap-2 mt-3">
-                    {otpInput.map((input, i) => (
-                      <input
-                        key={i}
-                        type="text"
-                        value={input}
-                        className="mt-3 text-center rounded-lg py-3 w-15 border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
-                        onKeyDown={(e) => handleOnKeyDown(e, i)}
-                        ref={(input) => (inputRef.current[i] = input)}
-                        onChange={(e) => handleInputChange(e.target.value, i)}
-                      />
-                    ))}
+                    {otpInput &&
+                      otpInput.map((input, i) => (
+                        <input
+                          key={i}
+                          type="text"
+                          value={input}
+                          className="mt-3 text-center rounded-lg py-3 w-15 border border-amber-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
+                          onKeyDown={(e) => handleOnKeyDown(e, i)}
+                          ref={(input) => (inputRef.current[i] = input)}
+                          onChange={(e) =>
+                            handleInputChangeforOtp(e.target.value, i)
+                          }
+                        />
+                      ))}
                   </div>
                 </div>
 
