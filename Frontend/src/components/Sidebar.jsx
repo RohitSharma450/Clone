@@ -87,9 +87,9 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`hidden sm:block fixed top-18 left-0 h-[calc(100vh-64px)] bg-black border-r
+      className={`hidden sm:block fixed top-18 left-0  h-[calc(100vh-64px)] bg-black border-r
          border-white p-5 transition-all duration-300 z-9 ${
-           isOpen ? "w-64 " : "w-20"
+           isOpen ? "md:w-64 " : "w-20"
          }`}
     >
       <div
